@@ -42,12 +42,15 @@ public class PaymentServiceImpl implements PaymentService {
 		
 		GatewayService gateway = paymentProcessor.getGateway(payment);
 
+		payment = paymentRepository.save(payment);
+
 		String url = gateway.processPayment(payment);
 
-		paymentRepository.save(payment);
 		
 		return url;
 
 	}
+
+
 
 }

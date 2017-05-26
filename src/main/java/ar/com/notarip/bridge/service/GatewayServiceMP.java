@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.mercadopago.MP;
 
+import ar.com.notarip.bridge.PaymentStatus;
 import ar.com.notarip.bridge.ServiceConfig;
 import ar.com.notarip.bridge.model.Payment;
+import ar.com.notarip.bridge.model.PaymentMP;
+import ar.com.notarip.bridge.repository.PaymentMPRepository;
 import ar.com.notarip.bridge.repository.PaymentRepository;
 
 
@@ -17,8 +20,13 @@ import ar.com.notarip.bridge.repository.PaymentRepository;
 public class GatewayServiceMP implements GatewayService {
 
 
+	public final static String APPROVED = "approved";
+	
 	@Autowired
 	PaymentRepository paymentRepository;
+	
+	@Autowired
+	PaymentMPRepository paymentMPRepository;
 	
 	@Autowired
 	ServiceConfig serviceConfig;
@@ -30,9 +38,7 @@ public class GatewayServiceMP implements GatewayService {
 		String clientid = serviceConfig.getClientId();
 		String clientsecret = serviceConfig.getClientSecret();
 		String backUrl = serviceConfig.getBackUrl();
-		
-		paymentRepository.count();
-		
+	
 		MP mp = new MP (clientid, clientsecret);
 		String checkoutURL = null;
 		
@@ -71,12 +77,34 @@ public class GatewayServiceMP implements GatewayService {
 		try {
 			preference = mp.createPreference(preference.toString());
 			checkoutURL = preference.getJSONObject("response").getString("init_point");
+			String preferenceId = preference.getJSONObject("response").getString("id");
+			PaymentMP paymentMP = new PaymentMP();
+			paymentMP.setPaymentId(payment.getId());
+			paymentMP.setPreferenceId(preferenceId);
+			paymentMP.setStatus(PaymentStatus.INITIATED);
+			paymentMPRepository.save(paymentMP);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return checkoutURL;
+	}
+
+
+	public PaymentMP getByPreferenceId(String id) {
+		
+		PaymentMP paymentMP = paymentMPRepository.findByPreferenceId(id);
+		
+		return paymentMP;
+	}
+
+
+	public void save(PaymentMP paymentMP) {
+		
+		paymentMPRepository.save(paymentMP);
+		
 	}
 
 
