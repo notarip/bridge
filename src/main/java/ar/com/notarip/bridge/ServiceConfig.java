@@ -17,6 +17,8 @@ public class ServiceConfig {
 	@Value("{client_secret}")
 	private String clientSecret;
 
+	@Value("{back_url}")
+	private String backUrl;
 	
 	public String getClientId() {
 		return clientId;
@@ -32,6 +34,14 @@ public class ServiceConfig {
 
 	public void setClientSecret(String clientSecret) {
 		this.clientSecret = clientSecret;
+	}
+
+	public String getBackUrl() {
+		return backUrl;
+	}
+
+	public void setBackUrl(String backUrl) {
+		this.backUrl = backUrl;
 	}
 	
 	
