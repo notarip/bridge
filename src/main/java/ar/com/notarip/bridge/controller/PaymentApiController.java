@@ -21,13 +21,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import ar.com.notarip.bridge.PaymentStatus;
 import ar.com.notarip.bridge.model.PaymentMP;
 import ar.com.notarip.bridge.service.GatewayServiceMP;
+import ar.com.notarip.bridge.service.GatewayServiceTP;
 import ar.com.notarip.bridge.service.PaymentService;
 import ar.com.notarip.bridge.service.dto.PaymentCreateDTO;
 import ar.com.notarip.bridge.service.dto.PaymentDTO;
 import ar.com.notarip.bridge.util.CustomErrorType;
 import ar.com.notarip.bridge.util.RabbitSender;
-
-
 
 @RestController
 @RequestMapping("/v1/api")
@@ -37,10 +36,13 @@ public class PaymentApiController {
 
 	@Autowired
 	PaymentService paymentService;
-	
+
 	@Autowired
 	GatewayServiceMP gatewayServiceMP;
-	
+
+	@Autowired
+	GatewayServiceTP gatewayServiceTP;
+
 	@Autowired
 	RabbitSender sender;
 
@@ -75,84 +77,60 @@ public class PaymentApiController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(ucBuilder.path("/api/payment/{id}").buildAndExpand(paymentDTO.getId()).toUri());
 		headers.set("url", url);
-		
-		
-		sender.send("bridge.payment", payment.getCurrency());
-		
+
+		// sender.send("bridge.payment", payment.getCurrency());
+
 		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 
 	}
-	
+
 	@RequestMapping(value = "/payment/MPResponse", method = RequestMethod.GET)
-	public void notifyPayment(HttpServletRequest request, HttpServletResponse response) {
-		
+	public void notifyMPPayment(HttpServletRequest request, HttpServletResponse response) {
+
 		logger.info("Fetching payment with id {}");
 
 		String collection_status = request.getParameter("collection_status");
 		String id = request.getParameter("preference_id");
-		
+
 		PaymentMP paymentMP = gatewayServiceMP.getByPreferenceId(id);
 		PaymentDTO payment = paymentService.get(paymentMP.getPaymentId());
 		String callbackUrl = payment.getCallbackUrl();
-		
-		if(collection_status.equals(GatewayServiceMP.APPROVED)){
+
+		if (collection_status.equals(GatewayServiceMP.APPROVED)) {
 			paymentMP.setStatus(PaymentStatus.APPROVED);
 			payment.setStatus(PaymentStatus.APPROVED);
 		}
-		
+
 		gatewayServiceMP.save(paymentMP);
-		
-		
+
 		try {
 			response.sendRedirect(callbackUrl);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
-	// @RequestMapping(value = "/comment/{id}", method = RequestMethod.PUT)
-	// public ResponseEntity<?> update(@PathVariable("id") String id,
-	// @RequestBody CommentUpdateDTO resource) {
-	//
-	// CommentDTO comment = commentService.get(id);
-	//
-	// if(comment != null){
-	// comment.setText(resource.getText());
-	// commentService.update(comment);
-	// }else{
-	// String error = buildError("Comment with id {%s} not found.", id);
-	// logger.error(error);
-	// return new ResponseEntity<CustomErrorType>(new CustomErrorType(error),
-	// HttpStatus.NOT_FOUND);
-	// }
-	//
-	// HttpHeaders headers = new HttpHeaders();
-	// return new ResponseEntity<String>(headers, HttpStatus.OK);
-	//
-	// }
+	@RequestMapping(value = "/payment/TPResponse", method = RequestMethod.GET)
+	public void notifyTPPayment(HttpServletRequest request, HttpServletResponse response) {
 
-	// @RequestMapping(value = "/comment/{id}", method = RequestMethod.DELETE)
-	// public ResponseEntity<?> deleta(@PathVariable("id") String id) {
-	//
-	// CommentDTO comment = commentService.get(id);
-	//
-	// if(comment != null){
-	//
-	// commentService.delete(comment);
-	// }else{
-	// String error = buildError("Comment with id {%s} not found.", id);
-	// logger.error(error);
-	// return new ResponseEntity<CustomErrorType>(new CustomErrorType(error),
-	// HttpStatus.NOT_FOUND);
-	// }
-	//
-	// HttpHeaders headers = new HttpHeaders();
-	// return new ResponseEntity<String>(headers, HttpStatus.OK);
-	//
-	// }
-	//
+		logger.info("Fetching payment with id {}");
+		// 3f96d31e-c43c-944b-6416-104430bfbeea
+
+		String answer = request.getParameter("Answer");
+		String id = request.getParameter("id");
+		String callbackUrl = gatewayServiceTP.processAnswer(id, answer);
+
+		try {
+			response.sendRedirect(callbackUrl);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 	private String buildError(String msg, Object... args) {
 
 		String error = msg;

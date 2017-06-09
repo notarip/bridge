@@ -66,9 +66,20 @@
 			<version>0.3.4</version>
 		</dependency>
 		<dependency>
+			<groupId>com.ar.todopago</groupId>
+			<artifactId>sdk-java</artifactId>
+			<version>1.8.0</version>
+			 <scope>system</scope>
+    		<systemPath>${project.basedir}/src/main/resources/sdk-java.jar</systemPath>
+		</dependency>
+			<dependency>
+   			 <groupId>org.json</groupId>
+   			 <artifactId>json</artifactId>
+	</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>		
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>bridge</finalName>

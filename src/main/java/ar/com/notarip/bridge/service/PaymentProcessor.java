@@ -12,16 +12,19 @@ public class PaymentProcessor {
 	@Autowired
 	GatewayService gatewayServiceMP;
 	
+	@Autowired
+	GatewayService gatewayServiceTP;
+	
 	public PaymentProcessor() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	
 	public GatewayService getGateway(Payment payment){
 		
-		
-		
-		return gatewayServiceMP;
+		if(payment.getMount() > 100)
+				return gatewayServiceMP;
+		else
+			return gatewayServiceTP;
 	}
 	
 

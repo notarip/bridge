@@ -14,7 +14,7 @@ public class Payment {
 	
 	private String email;
 	
-	private String gataway;
+	private String gateway;
 	
 	private String currency;
 	
@@ -68,13 +68,13 @@ public class Payment {
 	}
 
 
-	public String getGataway() {
-		return gataway;
+	public String getGateway() {
+		return gateway;
 	}
 
 
-	public void setGataway(String gataway) {
-		this.gataway = gataway;
+	public void setGateway(String gateway) {
+		this.gateway = gateway;
 	}
 
 

@@ -1,8 +1,9 @@
 ### TODO
 
 
+- Para TP terminar el flujo de un pago ok 
 - cubrir el flujo de cancel de mp
-- 
+- hacer parametria de colas para habilitar y no 
 - integracion de TP
 - integrar rabitMQ
 - Parametrizar datos de los gateways
@@ -17,6 +18,19 @@
 ### usuarios
  #{"id":257953849,"nickname":"TETE5813279","password":"qatest1533","site_status":"active","email":"test_user_2634434@testuser.com"}
  #{"id":257956135,"nickname":"TETE5610508","password":"qatest1966","site_status":"active","email":"test_user_81310653@testuser.com"
+
+#### TP 
+https://developers.todopago.com.ar/site/datos-de-prueba
+Nro. de Comercio (Merchant ID) 27117
+Credenciales (API Keys) TODOPAGO f80bd88960a54b2cbc0241c882fdf856
+{
+URL_Request=https://developers.todopago.com.ar/formulario/commands?command=formulario&m=t8e4f44f3-1377-f663-4946-667f0da4bd57, 
+RequestKey=e462d909-39fe-2b5a-c2cc-ca07b12db5f8, 
+PublicRequestKey=t8e4f44f3-1377-f663-4946-667f0da4bd57, 
+StatusCode=-1, 
+StatusMessage=Solicitud de Autorizacion Registrada
+}
+
  
  ### Pruebas
  

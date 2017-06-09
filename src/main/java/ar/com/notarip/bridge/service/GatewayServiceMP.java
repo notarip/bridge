@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.mercadopago.MP;
 
 import ar.com.notarip.bridge.PaymentStatus;
-import ar.com.notarip.bridge.ServiceConfig;
+import ar.com.notarip.bridge.ServiceMPConfig;
 import ar.com.notarip.bridge.model.Payment;
 import ar.com.notarip.bridge.model.PaymentMP;
 import ar.com.notarip.bridge.repository.PaymentMPRepository;
@@ -19,7 +19,7 @@ import ar.com.notarip.bridge.repository.PaymentRepository;
 @Service(value = "gatewayServiceMP")
 public class GatewayServiceMP implements GatewayService {
 
-
+	private static final String GATEWAY_NAME = "MP";
 	public final static String APPROVED = "approved";
 	
 	@Autowired
@@ -29,7 +29,7 @@ public class GatewayServiceMP implements GatewayService {
 	PaymentMPRepository paymentMPRepository;
 	
 	@Autowired
-	ServiceConfig serviceConfig;
+	ServiceMPConfig serviceConfig;
 
 
 	@Override
@@ -47,8 +47,6 @@ public class GatewayServiceMP implements GatewayService {
 		JSONObject item = new JSONObject();
 		JSONObject payer = new JSONObject();
 		JSONObject bac_urls = new JSONObject();
-		
-		
 		
 		try {
 			
@@ -105,6 +103,13 @@ public class GatewayServiceMP implements GatewayService {
 		
 		paymentMPRepository.save(paymentMP);
 		
+	}
+
+
+	@Override
+	public String getGatewayName() {
+
+		return GATEWAY_NAME;
 	}
 
 

@@ -27,7 +27,7 @@ public class PaymentServiceImpl implements PaymentService {
 	public PaymentDTO get(String id) {
 
 		Payment payment = paymentRepository.findById(id);
-
+		
 		PaymentDTO paymentDTO = paymentMapper.toPaymentDTO(payment);
 
 		return paymentDTO;
@@ -41,16 +41,13 @@ public class PaymentServiceImpl implements PaymentService {
 		Payment payment = paymentMapper.toPayment(paymentDTO);
 		
 		GatewayService gateway = paymentProcessor.getGateway(payment);
+		
+		payment.setGateway(gateway.getGatewayName());
 
 		payment = paymentRepository.save(payment);
 
 		String url = gateway.processPayment(payment);
-
 		
 		return url;
-
 	}
-
-
-
 }

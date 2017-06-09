@@ -6,4 +6,5 @@ public interface GatewayService {
 	
 	
 	public String processPayment(Payment payment);
+	public String getGatewayName();
 }

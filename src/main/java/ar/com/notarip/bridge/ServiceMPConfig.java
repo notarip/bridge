@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "mercadopago", ignoreUnknownFields = false)
-public class ServiceConfig {
+public class ServiceMPConfig {
 
 	@Value("{client_id}")
 	private String clientId;
