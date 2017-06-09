@@ -1,6 +1,6 @@
 ### TODO
 
-
+- seguir con smart payment, para ver con que criterios mandar a uno o al otro
 - hacer parametria de colas para habilitar y no 
 - integrar rabitMQ
 - Parametrizar datos de los gateways
