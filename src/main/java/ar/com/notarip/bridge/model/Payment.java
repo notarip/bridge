@@ -2,6 +2,10 @@ package ar.com.notarip.bridge.model;
 
 import org.springframework.data.annotation.Id;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class Payment {
 	
 	
@@ -107,6 +111,13 @@ public class Payment {
 		this.callbackUrl = callbackUrl;
 	}
 	
-	
+	@Override
+	public String toString() {
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls()
+				.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+
+		return gson.toJson(this);
+	}
 	
 }

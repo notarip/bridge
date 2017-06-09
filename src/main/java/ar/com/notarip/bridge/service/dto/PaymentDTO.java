@@ -1,5 +1,9 @@
 package ar.com.notarip.bridge.service.dto;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class PaymentDTO {
 
 	private String id;
@@ -10,7 +14,7 @@ public class PaymentDTO {
 	
 	private String email;
 	
-	private String gataway;
+	private String gateway;
 	
 	private String currency;
 	
@@ -50,12 +54,12 @@ public class PaymentDTO {
 		this.email = email;
 	}
 
-	public String getGataway() {
-		return gataway;
+	public String getGateway() {
+		return gateway;
 	}
 
-	public void setGataway(String gataway) {
-		this.gataway = gataway;
+	public void setGateway(String gateway) {
+		this.gateway = gateway;
 	}
 
 	public String getCurrency() {
@@ -82,6 +86,14 @@ public class PaymentDTO {
 		this.callbackUrl = callbackUrl;
 	}
 	
+	@Override
+	public String toString() {
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls()
+				.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+
+		return gson.toJson(this);
+	}
 	
 	
 }

@@ -78,10 +78,14 @@ public class PaymentApiController {
 		headers.setLocation(ucBuilder.path("/api/payment/{id}").buildAndExpand(paymentDTO.getId()).toUri());
 		headers.set("url", url);
 
-		// sender.send("bridge.payment", payment.getCurrency());
+		sendEvent(paymentDTO.toString());
 
 		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 
+	}
+
+	private void sendEvent(String string) {
+		sender.send("bridge.payment", string.toString());
 	}
 
 	@RequestMapping(value = "/payment/MPResponse", method = RequestMethod.GET)
@@ -102,7 +106,9 @@ public class PaymentApiController {
 		}
 
 		gatewayServiceMP.save(paymentMP);
-
+		
+		sendEvent(payment.toString());
+		
 		try {
 			response.sendRedirect(callbackUrl);
 		} catch (IOException e) {
@@ -121,7 +127,7 @@ public class PaymentApiController {
 		String answer = request.getParameter("Answer");
 		String id = request.getParameter("id");
 		String callbackUrl = gatewayServiceTP.processAnswer(id, answer);
-
+		
 		try {
 			response.sendRedirect(callbackUrl);
 		} catch (IOException e) {

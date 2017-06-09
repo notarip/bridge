@@ -1,5 +1,6 @@
 ### TODO
-
+- mandar el procesamiento de la respuesta al servicio en Mp para que quede como la de TP
+- agregar un id externo al pago
 - seguir con smart payment, para ver con que criterios mandar a uno o al otro
 - hacer parametria de colas para habilitar y no 
 - integrar rabitMQ
