@@ -13,8 +13,6 @@ public interface  PaymentTPRepository extends MongoRepository<PaymentTP, String>
 
 	List<PaymentTP> findAllBy(TextCriteria criteria);
 
-	PaymentTP findByPreferenceId(String id);
-
 	PaymentTP findByPaymentTpId(String id);
 
 }
