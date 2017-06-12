@@ -50,4 +50,12 @@ public class PaymentServiceImpl implements PaymentService {
 		
 		return url;
 	}
+
+	@Override
+	public PaymentDTO getByExternalId(String id) {
+		
+		Payment payment = paymentRepository.findByExternalId(id);
+		
+		return paymentMapper.toPaymentDTO(payment);
+	}
 }

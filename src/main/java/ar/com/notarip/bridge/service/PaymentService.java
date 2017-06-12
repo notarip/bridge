@@ -8,4 +8,6 @@ public interface PaymentService {
 
 	public String save(PaymentDTO paymentDTO);
 
+	public PaymentDTO getByExternalId(String id);
+
 }

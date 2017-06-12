@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class RabbitSender {
 
+	public final static String QUEUE = "bridge.payment";
+	
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 

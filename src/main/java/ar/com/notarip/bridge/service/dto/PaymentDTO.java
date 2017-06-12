@@ -8,6 +8,8 @@ public class PaymentDTO {
 
 	private String id;
 	
+	private String externalId;
+	
 	private String status;
 	
 	private String description;
@@ -93,6 +95,14 @@ public class PaymentDTO {
 				.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
 
 		return gson.toJson(this);
+	}
+
+	public String getExternalId() {
+		return externalId;
+	}
+
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
 	}
 	
 	

@@ -2,6 +2,8 @@ package ar.com.notarip.bridge.service.dto;
 
 public class PaymentCreateDTO {
 	
+	private String externalId;
+	
 	private String description;
 	
 	private String email;
@@ -14,7 +16,6 @@ public class PaymentCreateDTO {
 	
 	
 	public PaymentCreateDTO() {
-		// TODO Auto-generated constructor stub
 	}
 
 
@@ -65,6 +66,16 @@ public class PaymentCreateDTO {
 
 	public void setCallbackUrl(String callbackUrl) {
 		this.callbackUrl = callbackUrl;
+	}
+
+
+	public String getExternalId() {
+		return externalId;
+	}
+
+
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
 	}
 	
 	

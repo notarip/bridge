@@ -5,6 +5,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mercadopago.MP;
 
@@ -14,6 +15,7 @@ import ar.com.notarip.bridge.model.Payment;
 import ar.com.notarip.bridge.model.PaymentMP;
 import ar.com.notarip.bridge.repository.PaymentMPRepository;
 import ar.com.notarip.bridge.repository.PaymentRepository;
+import ar.com.notarip.bridge.util.RabbitSender;
 
 
 @Service(value = "gatewayServiceMP")
@@ -31,6 +33,8 @@ public class GatewayServiceMP implements GatewayService {
 	@Autowired
 	ServiceMPConfig serviceConfig;
 
+	@Autowired
+	RabbitSender sender;
 
 	@Override
 	public String processPayment(Payment payment) {
@@ -87,7 +91,14 @@ public class GatewayServiceMP implements GatewayService {
 			e.printStackTrace();
 		}
 		
+		sendEvent(payment);
+		
 		return checkoutURL;
+	}
+
+
+	private void sendEvent(Payment payment) {
+		sender.send(RabbitSender.QUEUE, payment.toString());
 	}
 
 
@@ -96,6 +107,26 @@ public class GatewayServiceMP implements GatewayService {
 		PaymentMP paymentMP = paymentMPRepository.findByPreferenceId(id);
 		
 		return paymentMP;
+	}
+	
+	@Transactional
+	public String proccessAnswer(String id, String status){
+		
+		PaymentMP paymentMP = getByPreferenceId(id);
+		Payment payment = paymentRepository.findById(paymentMP.getPaymentId());
+		String callbackUrl = payment.getCallbackUrl();
+
+		if (status.equals(GatewayServiceMP.APPROVED)) {
+			paymentMP.setStatus(PaymentStatus.APPROVED);
+			payment.setStatus(PaymentStatus.APPROVED);
+		}
+
+		this.save(paymentMP);
+		paymentRepository.save(payment);
+		
+		sendEvent(payment); 
+		
+		return callbackUrl;
 	}
 
 

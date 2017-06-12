@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import ar.com.notarip.bridge.PaymentStatus;
-import ar.com.notarip.bridge.model.PaymentMP;
 import ar.com.notarip.bridge.service.GatewayServiceMP;
 import ar.com.notarip.bridge.service.GatewayServiceTP;
 import ar.com.notarip.bridge.service.PaymentService;
@@ -59,9 +58,24 @@ public class PaymentApiController {
 		}
 		return new ResponseEntity<PaymentDTO>(payment, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/payment/external/{externalId}", method = RequestMethod.GET)
+	public ResponseEntity<?> getByExternalId(@PathVariable("externalId") String id) {
+		logger.info("Fetching payment with id {}", id);
+
+		PaymentDTO payment = paymentService.getByExternalId(id);
+
+		if (payment == null) {
+			String error = buildError("Parent with id {%s} not found .", id);
+			logger.error(error);
+			return new ResponseEntity<CustomErrorType>(new CustomErrorType(error), HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<PaymentDTO>(payment, HttpStatus.OK);
+	}
 
 	@RequestMapping(value = "/payment", method = RequestMethod.POST)
 	public ResponseEntity<?> createPayment(@RequestBody PaymentCreateDTO payment, UriComponentsBuilder ucBuilder) {
+	
 		logger.info("Creating Payment ", payment);
 
 		PaymentDTO paymentDTO = new PaymentDTO();
@@ -70,6 +84,7 @@ public class PaymentApiController {
 		paymentDTO.setDescription(payment.getDescription());
 		paymentDTO.setEmail(payment.getEmail());
 		paymentDTO.setMount(payment.getMount());
+		paymentDTO.setExternalId(payment.getExternalId());
 		paymentDTO.setStatus(PaymentStatus.INITIATED);
 
 		String url = paymentService.save(paymentDTO);
@@ -78,14 +93,8 @@ public class PaymentApiController {
 		headers.setLocation(ucBuilder.path("/api/payment/{id}").buildAndExpand(paymentDTO.getId()).toUri());
 		headers.set("url", url);
 
-		sendEvent(paymentDTO.toString());
-
 		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 
-	}
-
-	private void sendEvent(String string) {
-		sender.send("bridge.payment", string.toString());
 	}
 
 	@RequestMapping(value = "/payment/MPResponse", method = RequestMethod.GET)
@@ -95,19 +104,7 @@ public class PaymentApiController {
 
 		String collection_status = request.getParameter("collection_status");
 		String id = request.getParameter("preference_id");
-
-		PaymentMP paymentMP = gatewayServiceMP.getByPreferenceId(id);
-		PaymentDTO payment = paymentService.get(paymentMP.getPaymentId());
-		String callbackUrl = payment.getCallbackUrl();
-
-		if (collection_status.equals(GatewayServiceMP.APPROVED)) {
-			paymentMP.setStatus(PaymentStatus.APPROVED);
-			payment.setStatus(PaymentStatus.APPROVED);
-		}
-
-		gatewayServiceMP.save(paymentMP);
-		
-		sendEvent(payment.toString());
+		String callbackUrl  = gatewayServiceMP.proccessAnswer(id, collection_status);
 		
 		try {
 			response.sendRedirect(callbackUrl);
@@ -122,12 +119,11 @@ public class PaymentApiController {
 	public void notifyTPPayment(HttpServletRequest request, HttpServletResponse response) {
 
 		logger.info("Fetching payment with id {}");
-		// 3f96d31e-c43c-944b-6416-104430bfbeea
 
 		String answer = request.getParameter("Answer");
 		String id = request.getParameter("id");
 		String callbackUrl = gatewayServiceTP.processAnswer(id, answer);
-		
+	
 		try {
 			response.sendRedirect(callbackUrl);
 		} catch (IOException e) {

@@ -15,6 +15,7 @@ import ar.com.notarip.bridge.model.Payment;
 import ar.com.notarip.bridge.model.PaymentTP;
 import ar.com.notarip.bridge.repository.PaymentRepository;
 import ar.com.notarip.bridge.repository.PaymentTPRepository;
+import ar.com.notarip.bridge.util.RabbitSender;
 import ar.com.notarip.bridge.util.TPHelper;
 import ar.com.todopago.api.ElementNames;
 import ar.com.todopago.api.TodoPagoConector;
@@ -45,6 +46,9 @@ public class GatewayServiceTP implements GatewayService {
 	@Autowired
 	PaymentRepository paymentRepository;
 	
+	@Autowired
+	RabbitSender sender;
+	
 	@Override
 	public String processPayment(Payment payment) {
 
@@ -68,6 +72,8 @@ public class GatewayServiceTP implements GatewayService {
 		
 				
 		paymentTPRepository.save(paymentTP);
+		
+		sendEvent(payment);
 
 		return checkOutUrl;
 	}
@@ -204,6 +210,12 @@ public class GatewayServiceTP implements GatewayService {
 		paymentRepository.save(payment);
 		paymentTPRepository.save(paymentTP);
 		
+		sendEvent(payment);
+		
 		return payment.getCallbackUrl();
+	}
+
+	private void sendEvent(Payment payment) {
+		sender.send(RabbitSender.QUEUE, payment.toString());
 	}
 }

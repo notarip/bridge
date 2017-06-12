@@ -14,4 +14,6 @@ public interface PaymentRepository extends MongoRepository<Payment, String>{
 
 	List<Payment> findAllBy(TextCriteria criteria);
 
+	Payment  findByExternalId(String id);
+
 }
