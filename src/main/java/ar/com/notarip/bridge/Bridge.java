@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackages = { "ar.com.notarip.bridge" })
 //@RabbitListener(queues = "bridge.payment")
-public class SpringBootRestApiApp {
+public class Bridge {
 	public static void main(String[] args) {
-		SpringApplication.run(SpringBootRestApiApp.class, args);
+		SpringApplication.run(Bridge.class, args);
 	}
 
 //	@RabbitHandler
