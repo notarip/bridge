@@ -11,5 +11,7 @@ todopago:
   api_key: TODOPAGO f80bd88960a54b2cbc0241c882fdf856
   merchant: 27117
   back_url: http://localhost:8080/v1/api/payment/TPResponse?id=%id
+common:
+  events: false
  
  
