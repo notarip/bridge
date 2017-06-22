@@ -19,6 +19,12 @@ public class SmartPayment {
 	
 	private Date to;
 	
+	private String criteriaName;
+	
+	private Double fromMount;
+	
+	private Double toMount;
+	
 	
 	public SmartPayment() {
 		
@@ -74,6 +80,30 @@ public class SmartPayment {
 
 	public void setGatewayAlternativeName(String gatewayAlternativeName) {
 		this.gatewayAlternativeName = gatewayAlternativeName;
+	}
+
+	public String getCriteriaName() {
+		return criteriaName;
+	}
+
+	public void setCriteriaName(String criteriaName) {
+		this.criteriaName = criteriaName;
+	}
+
+	public Double getFromMount() {
+		return fromMount;
+	}
+
+	public void setFromMount(Double fromMount) {
+		this.fromMount = fromMount;
+	}
+
+	public Double getToMount() {
+		return toMount;
+	}
+
+	public void setToMount(Double toMount) {
+		this.toMount = toMount;
 	}
 
 }

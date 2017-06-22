@@ -12,6 +12,6 @@ todopago:
   merchant: 27117
   back_url: http://localhost:8080/v1/api/payment/TPResponse?id=%id
 common:
-  events: false
+  events: true
  
  

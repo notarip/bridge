@@ -35,3 +35,35 @@ Nro de Tarjeta				Tipo de Tarjeta			CCV	Vencimiento
 36463664750005		Diners						123	07/18
 5323601111111112	Mastercard				123	09/18
 4507990000000010	Visa							123	09/18
+
+
+#### Rabbit
+
+rabbitmq-plugins enable rabbitmq_web_stomp
+
+http://localhost:8080/rabbit/echo.html?ws
+
+#### Boostrap
+
+{"name" : "criteria",
+    "criteriaName" : "date",
+    "from" : ISODate("2015-01-01T21:21:20.201Z"),
+    "to" : ISODate("2050-06-12T12:50:00.000Z")}
+
+{"name" : "date",
+    "gatewayName" : "TP",
+    "gatewayAlternativeName" : "MP",
+    "from" : ISODate("2015-01-01T21:21:20.201Z"),
+    "to" : ISODate("2017-06-12T12:50:00.000Z")}
+
+{"name" : "mount",
+    "gatewayName" : "TP",
+    "gatewayAlternativeName" : "MP",
+    "fromMount" :0,
+    "toMount": 100,
+    "from" : ISODate("2015-01-01T21:21:20.201Z"),
+    "to" : ISODate("2050-06-12T12:50:00.000Z")}
+
+
+
+

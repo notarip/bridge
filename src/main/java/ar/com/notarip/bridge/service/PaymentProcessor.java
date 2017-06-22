@@ -25,10 +25,45 @@ public class PaymentProcessor {
 
 	public GatewayService getGateway(Payment payment) {
 
-		SmartPayment smart = smartRepo.findByName("date");
+		SmartPayment smart = smartRepo.findByName("criteria");
+		SmartPayment criteria = smartRepo.findByName(smart.getCriteriaName());
+
 		Date now = new Date();
 		String gatewayName = "";
 
+		switch (criteria.getName()) {
+		case "date":
+			gatewayName = getGatewayByDate(criteria, now);
+			break;
+		case "mount":
+			gatewayName = getGatewayByMount(criteria, payment.getMount());
+			break;
+
+		}
+
+		return getGateway(gatewayName);
+
+	}
+
+	private String getGatewayByMount(SmartPayment smart, Double mount) {
+
+		String gatewayName;
+
+		if (smart.getFromMount() <= mount && mount <= smart.getToMount()) {
+
+			gatewayName = smart.getGatewayName();
+
+		} else {
+
+			gatewayName = smart.getGatewayAlternativeName();
+		}
+
+		return gatewayName;
+
+	}
+
+	private String getGatewayByDate(SmartPayment smart, Date now) {
+		String gatewayName;
 		if (smart.getFrom().before(now) && smart.getTo().after(now)) {
 
 			gatewayName = smart.getGatewayName();
@@ -36,9 +71,7 @@ public class PaymentProcessor {
 		} else {
 			gatewayName = smart.getGatewayAlternativeName();
 		}
-
-		return getGateway(gatewayName);
-
+		return gatewayName;
 	}
 
 	private GatewayService getGateway(String gatewayName) {
